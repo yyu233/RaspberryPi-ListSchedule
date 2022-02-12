@@ -19,6 +19,8 @@ typedef struct {
     int numEdges;
 } GraphInfo;
 
+//heap, remember to free
+Queue rootQ;
 
 Queue sortedTasks[NUM_TASKS];
 int asap[NUM_TASKS];
@@ -30,6 +32,6 @@ void dequeue(Queue* q);
 
 void setGraphInfo(int workloadDependencies [NUM_TASKS][NUM_TASKS], GraphInfo* gi);
 
-void topologicalSort(int* deps, GraphInfo* gi, Queue* sortedTasks, int* levelTable);
+void topologicalSort(int deps[NUM_TASKS][NUM_TASKS], GraphInfo* gi, Queue* rootQ, Queue sortedTasks[NUM_TASKS], int levelTable[NUM_TASKS]);
 
 #endif
