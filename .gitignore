@@ -1,0 +1,9 @@
+.*
+*.swp
+*.o
+*.zip
+!scheduler.o
+!section2/1/workload.o 
+!section2/2/workload.o
+!section2/3/workload.o
+!/.gitignore
