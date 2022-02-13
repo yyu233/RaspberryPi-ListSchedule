@@ -8,6 +8,10 @@
 #include <stdio.h>
 #include <limits.h>
 
+int completeSortedList [NUM_TASKS] = {0};
+int taskIndex = 0;
+int maxDepth = 0;
+
 void enqueue(Queue* q, Node* node) {
 	if (q->len == 0) {
 		q->head = node;
@@ -43,17 +47,71 @@ void freeMem() {
 		}
 		int i = 0;
 		for (; i < NUM_TASKS; i++) {
-			if (sortedTasks[i].len != 0) {
-				cur = sortedTasks[i].head;
+			if (sortedTasksASAP[i].len != 0) {
+				cur = sortedTasksASAP[i].head;
 				while (cur != NULL) {
 					Node* tmp = cur->next;
 					free(cur);
 					cur = tmp;
 				}
 			}
+			if (sortedTasksALAP[i].len != 0) {
+				cur = sortedTasksALAP[i].head;
+				while (cur != NULL) {
+					Node* tmp = cur->next;
+					free(cur);
+					cur = tmp;
+				}
+        	}
 		}
 		free(rootQ);
 		free(gi);
+}
+
+void bubbleSort (int arr [], int start, int end, long long workloadDeadlines[], 
+				 int asap [], int alap[]) {
+	int i = start;
+	for (; i < end - 1; i++) {
+		int j = start;
+		for (; j < end - (i - start) - 1; j++) {
+			// mobility 
+			int curMob= alap[arr[j]] - asap[arr[j]];
+			int nextMob = alap[arr[j + 1]] - asap[arr[j + 1]];
+			if (curMob > nextMob) {
+				int tmp = arr[j];
+				arr[j] = arr[j + 1];
+				arr[j + 1] = tmp; 
+			}
+			// EDF
+			if (curMob == nextMob) {
+				if (workloadDeadlines[arr[j]] > workloadDeadlines[arr[j + 1]]) {
+					int tmp = arr[j];
+					arr[j] = arr[j + 1];
+					arr[j + 1] = tmp;
+				}
+			}
+		}
+	}
+}
+
+void setCompleteSortedList(int completeSortedList[], Queue sortedTasksASAP [NUM_TASKS], 
+						long long workloadDeadlines[], int asap[], int alap[]) {
+	int i = 0;
+	int j = 0;
+	int start = 0;
+	for (; i < NUM_TASKS; i++) {
+		if (sortedTasksASAP[i].len == 0) {
+			break;
+		}
+		Node* cur = sortedTasksASAP[i].head;
+		while (cur != NULL) {
+			completeSortedList[j] = cur->val;
+			j++;
+			cur = cur->next;
+		}
+		bubbleSort(completeSortedList, start, j, workloadDeadlines, asap, alap);
+		start = j;
+	}
 }
 
 void setGraphInfo(int workloadDependencies[NUM_TASKS][NUM_TASKS], GraphInfo* gi) {
@@ -76,7 +134,8 @@ void setGraphInfo(int workloadDependencies[NUM_TASKS][NUM_TASKS], GraphInfo* gi)
 	}
 }
 
-void setupTopoSort(int mode) {
+/**
+void setupTopoSort(int deps[NUM_TASKS][NUM_TASKS],  GraphInfo* gi, Queue* rootQ, int mode) {
 	int i = 0;
 	for (; i < NUM_TASKS; i++) {
 		int j = 0;
@@ -86,8 +145,11 @@ void setupTopoSort(int mode) {
 	}
 
 	gi = malloc(sizeof(GraphInfo));
-	gi->indeg = {0, 0, 0, 0, 0, 0, 0, 0};
-	gi->outdeg = {0, 0, 0, 0, 0, 0, 0, 0};
+    i = 0;
+    for (; i < NUM_TASKS; i++) {
+   	    gi->indeg[i] = 0;
+		gi->outdeg[i] = 0;
+    }
 	gi->numEdges = 0;
     setGraphInfo(workloadDependencies, gi);
 
@@ -104,14 +166,15 @@ void setupTopoSort(int mode) {
 		alap = {0};
 		sortedTasksALAP = {{.head = NULL, .len=0, .tail = NULL}};
 	}
-}
+}**/
 
 // startNode  1D array
 // deps 2D array
 // output 1D array
-void topologicalSort (int mode) {
+void topologicalSort (int deps[NUM_TASKS][NUM_TASKS], GraphInfo* gi, Queue* rootQ, 
+					Queue sortedTasks[NUM_TASKS], int levelTable[NUM_TASKS],int mode) {
 	//initialize rootQ
-	setupTopoSort(mode);
+	//setupTopoSort(mode);
 
 	int k = 0;
 	if (mode == ASAP) {
@@ -153,7 +216,12 @@ void topologicalSort (int mode) {
 		for (; j < n; j++) {
 			int u = rootQ->head->val;
 			//set level
-			levelTable[u] = i;
+			if (mode == ASAP) {
+				levelTable[u] = i;
+			}
+			if (mode == ALAP) {
+				levelTable[u] = maxDepth - i;
+			}
 			//dequeue
 			dequeue(rootQ);
 			if (mode == ASAP) {
@@ -201,9 +269,13 @@ void topologicalSort (int mode) {
 		}
 		i++;
 	}
-	freeMem();
+	if (mode == ASAP) {
+		maxDepth = i - 1;
+	}
 	if (gi->numEdges != 0) {
 		//free memory
+		printf("ERROR: numEdges: %d\n", gi->numEdges);
+		freeMem();
 		exit(-1);
 	}	
 }
@@ -231,11 +303,84 @@ void learn_workloads(SharedVariable* v) {
 	// thread_twocolor, thread_rgbcolor, thread_aled, thread_buzzer
 
 	// 1. asap
-	topologicalSort(ASAP);
+	int i = 0;
+	for (; i < NUM_TASKS; i++) {
+		int j = 0;
+		for (; j < NUM_TASKS; j++) {
+			deps[i][j] = workloadDependencies[i][j];
+		}
+	}
+	
+	GraphInfo* gi = malloc(sizeof(GraphInfo));
+    i = 0;
+    for (; i < NUM_TASKS; i++) {
+   	    gi->indeg[i] = 0;
+		gi->outdeg[i] = 0;
+    }
+	gi->numEdges = 0;
+    setGraphInfo(workloadDependencies, gi);
+
+    rootQ = malloc(sizeof(Queue));
+    rootQ->head=NULL;
+    rootQ->len=0;
+    rootQ->tail=NULL;
+
+    Queue sortedTasksASAP[NUM_TASKS] = {{.head = NULL, .len=0, .tail = NULL}};
+    Queue sortedTasksALAP[NUM_TASKS] = {{.head = NULL, .len=0, .tail = NULL}};
+
+    int asap [NUM_TASKS] = {0};
+    int alap [NUM_TASKS] = {0};
+
+	topologicalSort(deps, gi, rootQ, sortedTasksASAP, asap, ASAP);
+
+	Node* cur = rootQ->head;
+    while (cur != NULL) {
+        Node* tmp = cur->next;
+        free(cur);
+        cur = tmp;
+    }
+    free(rootQ);
+    free(gi);
 
 	// 2. alap
-	topologicalSort(ALAP);
+	i = 0;
+	for (; i < NUM_TASKS; i++) {
+		int j = 0;
+		for (; j < NUM_TASKS; j++) {
+			deps[i][j] = workloadDependencies[i][j];
+		}
+	}
+
+    gi = malloc(sizeof(GraphInfo));
+    i = 0;
+    for (; i < NUM_TASKS; i++) {
+   	    gi->indeg[i] = 0;
+		gi->outdeg[i] = 0;
+    }
+    gi->numEdges = 0;
+    setGraphInfo(workloadDependencies, gi);
+
+    rootQ = malloc(sizeof(Queue));
+    rootQ->head=NULL;
+    rootQ->len=0;
+    rootQ->tail=NULL;
 	
+    topologicalSort(deps, gi, rootQ, sortedTasksALAP, alap, ALAP);
+	/**
+	cur = rootQ->head;
+    while (cur != NULL) {
+        Node* tmp = cur->next;
+        free(cur);
+        cur = tmp;
+    }
+    free(rootQ);
+    free(gi);**/
+	freeMem();
+
+	//int completeSortedList [NUM_TASKS] = {0};
+
+    setCompleteSortedList(completeSortedList,sortedTasksASAP, workloadDeadlines, asap, alap);
+
 
 	// Tip 1. You can call each workload function here like:
 	// thread_button();
@@ -286,16 +431,20 @@ TaskSelection select_task(SharedVariable* sv, const int* aliveTasks, long long i
 		++i;
 	}*/
 
-
-
+	// schedule
+	int task = completeSortedList[taskIndex];
+	if (aliveTasks[taskIndex] == 0) {
+		if (taskIndex == 7) {
+			taskIndex = 0;
+		} else{
+			taskIndex++;
+		}
+		task = completeSortedList[taskIndex];
+	}
 	
-
-	
-	// 4. schedule
-
 	// The retun value can be specified like this:
 	TaskSelection sel;
-	//sel.task = prev_selection; // The thread ID which will be scheduled. i.e., 0(BUTTON) ~ 7(BUZZER)
+	sel.task = task; // The thread ID which will be scheduled. i.e., 0(BUTTON) ~ 7(BUZZER)
 	sel.freq = 1; // Request the maximum frequency (if you want the minimum frequency, use 0 instead.)
 
     return sel;

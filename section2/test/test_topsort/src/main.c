@@ -1134,10 +1134,6 @@ void test_setCompleteSortedList() {
     int asap [NUM_TASKS] = {0};
     int alap [NUM_TASKS] = {0};
 
-    i = 0;
-    for (; i < NUM_TASKS; i++) {
-        printf("ASAP[%d] : %d\n", i, asap[i]);
-    }
     topologicalSort(deps, gi, rootQ, sortedTasksASAP, asap, ASAP);
 
     Node* cur = rootQ->head;
@@ -1145,17 +1141,6 @@ void test_setCompleteSortedList() {
         Node* tmp = cur->next;
         free(cur);
         cur = tmp;
-    }
-    i = 0;
-    for (; i < NUM_TASKS; i++) {
-        if (sortedTasks[i].len != 0) {
-            cur = sortedTasks[i].head;
-            while (cur != NULL) {
-                Node* tmp = cur->next;
-                free(cur);
-                cur = tmp;
-            }
-        }
     }
     free(rootQ);
     free(gi);
@@ -1185,12 +1170,7 @@ void test_setCompleteSortedList() {
     rootQ->len=0;
     rootQ->tail=NULL;
 
-    topologicalSort(deps, gi, rootQ, sortedTasksASAP, alap, ALAP);
-
-    //completely sorted list
-    //int completeSortedList [NUM_TASKS] = {0};
-
-    //setCompleteSortedList(workloadDeadlines);
+    topologicalSort(deps, gi, rootQ, sortedTasksALAP, alap, ALAP);
 
     printf("Max Depth of graph: %d\n", maxDepth);
     assert(maxDepth == 2);
@@ -1243,6 +1223,25 @@ void test_setCompleteSortedList() {
 
     printf("ALAP[%d]: %d\n", 7, alap[7]);
     assert(alap[7] == 2);
+    
+    //completely sorted list
+    int completeSortedList [NUM_TASKS] = {0};
+
+    setCompleteSortedList(completeSortedList,sortedTasksASAP, workloadDeadlines, asap, alap);
+
+    i = 0;
+    for (; i < NUM_TASKS; i++) {
+        printf("completeSortedList[%d] : %d\n", i, completeSortedList[i]);
+    }
+
+    assert(completeSortedList[0] == 5);
+    assert(completeSortedList[1] == 6);
+    assert(completeSortedList[2] == 2);
+    assert(completeSortedList[3] == 4);
+    assert(completeSortedList[4] == 1);
+    assert(completeSortedList[5] == 7);
+    assert(completeSortedList[6] == 3);
+    assert(completeSortedList[7] == 0);
 
     printf("PASSED: test_setCompleteSortedList\n");
 
@@ -1254,8 +1253,16 @@ void test_setCompleteSortedList() {
     }
     i = 0;
     for (; i < NUM_TASKS; i++) {
-        if (sortedTasks[i].len != 0) {
-            cur = sortedTasks[i].head;
+        if (sortedTasksASAP[i].len != 0) {
+            cur = sortedTasksASAP[i].head;
+            while (cur != NULL) {
+                Node* tmp = cur->next;
+                free(cur);
+                cur = tmp;
+            }
+        }
+        if (sortedTasksALAP[i].len != 0) {
+            cur = sortedTasksALAP[i].head;
             while (cur != NULL) {
                 Node* tmp = cur->next;
                 free(cur);
@@ -1268,7 +1275,7 @@ void test_setCompleteSortedList() {
 }
 
 int main() {
-    test_setGraphInfo();
+   /** test_setGraphInfo();
     test_setGraphInfo_2();
     test_setGraphInfo_3();
 
@@ -1279,7 +1286,7 @@ int main() {
     test_topologicalsort_ALAP();
     test_topologicalsort_ALAP_2();
     test_topologicalsort_ALAP_3();
-
+**/
     test_setCompleteSortedList();
 
     //test_queue();

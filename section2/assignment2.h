@@ -9,7 +9,6 @@ struct shared_variable; // Defined in assignment1.h
 #define ASAP 0
 #define ALAP 1
 
-int curDepth;
 int curTask;
 
 typedef struct Node{
@@ -29,6 +28,8 @@ typedef struct {
     int numEdges;
 } GraphInfo;
 
+int maxDepth;
+
 //heap, remember to free
 Queue* rootQ;
 Queue sortedTasksASAP[NUM_TASKS];
@@ -45,11 +46,17 @@ void dequeue(Queue* q);
 
 void freeMem();
 
+void bubbleSort (int arr [], int start, int end, long long workloadDeadlines[], int asap[], int alap[]);
+
+void setCompleteSortedList(int completeSortedList[], Queue sortedTaskASAP [NUM_TASKS], 
+                    long long workloadDeadlines[], int asap[], int alap[]);
+
 void setGraphInfo(int workloadDependencies [NUM_TASKS][NUM_TASKS], GraphInfo* gi);
 
-void setupTopoSort(int mode);
+//void setupTopoSort(int mode);
 
-void topologicalSort(int mode);
+void topologicalSort(int deps[NUM_TASKS][NUM_TASKS], GraphInfo* gi, Queue* rootQ, 
+					Queue sortedTasks[NUM_TASKS], int levelTable[NUM_TASKS],int mode);
 
 // Call at the start part of the program before actual scheduling
 void learn_workloads(struct shared_variable* sv);

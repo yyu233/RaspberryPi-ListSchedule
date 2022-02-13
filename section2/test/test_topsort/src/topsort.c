@@ -69,8 +69,6 @@ void bubbleSort (int arr [], int start, int end, long long workloadDeadlines[],
 			// mobility 
 			int curMob= alap[arr[j]] - asap[arr[j]];
 			int nextMob = alap[arr[j + 1]] - asap[arr[j + 1]];
-			printf("DEBUG: bubbleSort: arr[%d] : %d : curMob : %d\n", j, arr[j], curMob); 
-			printf("DEBUG: bubbleSort: arr[%d] : %d : nextMob : %d\n", j + 1, arr[j + 1], nextMob); 
 			if (curMob > nextMob) {
 				int tmp = arr[j];
 				arr[j] = arr[j + 1];
@@ -86,10 +84,6 @@ void bubbleSort (int arr [], int start, int end, long long workloadDeadlines[],
 			}
 		}
 	}
-	i = start;
-	for (; i < end; i++) {
-		printf("DEBUG: bubbleSort: arr[%d] : %d\n", i, arr[i]);
-	}
 }
 
 void setCompleteSortedList(int completeSortedList[], Queue sortedTasksASAP [NUM_TASKS], 
@@ -99,13 +93,11 @@ void setCompleteSortedList(int completeSortedList[], Queue sortedTasksASAP [NUM_
 	int start = 0;
 	for (; i < NUM_TASKS; i++) {
 		if (sortedTasksASAP[i].len == 0) {
-			printf("DEBUGE: i: %d  BREAK\n", i);
 			break;
 		}
 		Node* cur = sortedTasksASAP[i].head;
 		while (cur != NULL) {
 			completeSortedList[j] = cur->val;
-			printf("DEBUG: completeSortedList[%d] : %d\n", j, completeSortedList[j]);
 			j++;
 			cur = cur->next;
 		}
