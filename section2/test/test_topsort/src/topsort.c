@@ -30,6 +30,7 @@ void dequeue(Queue* q) {
 
 void setGraphInfo(int workloadDependencies[NUM_TASKS][NUM_TASKS], GraphInfo* gi) {
 	int j = 0;
+	//set indegree and edges
 	for (; j < NUM_TASKS; j++) {
 		int i = 0;
 		for (; i < NUM_TASKS; i++) {
@@ -37,23 +38,44 @@ void setGraphInfo(int workloadDependencies[NUM_TASKS][NUM_TASKS], GraphInfo* gi)
 		}
 		gi->numEdges += gi->indeg[j];
 	}
+	//set outdegree
+	int i = 0;
+	for (; i < NUM_TASKS; i++) {
+		j = 0;
+		for (; j <NUM_TASKS; j++) {
+			gi->outdeg[i] += workloadDependencies[i][j];
+		}
+	}
 }
 
 // startNode  1D array
 // deps 2D array
 // output 1D array
 void topologicalSort(int deps[NUM_TASKS][NUM_TASKS], GraphInfo* gi, Queue* rootQ, 
-					Queue sortedTasks[NUM_TASKS], int levelTable[NUM_TASKS]) {
+					Queue sortedTasks[NUM_TASKS], int levelTable[NUM_TASKS], int mode) {
 	//initialize rootQ
 	int k = 0;
-	for (; k < NUM_TASKS; k++) {
-		if (gi->indeg[k] == 0) {
-			Node* node = malloc(sizeof(Node));
-			node->val = k;
-			node->next = NULL;
-			enqueue(rootQ, node);
+	if (mode == ASAP) {
+		for (; k < NUM_TASKS; k++) {
+			if (gi->indeg[k] == 0) {
+				Node* node = malloc(sizeof(Node));
+				node->val = k;
+				node->next = NULL;
+				enqueue(rootQ, node);
+			}
 		}
-	}	
+	}
+	if (mode == ALAP) {
+		for (; k < NUM_TASKS; k++) {
+			if (gi->outdeg[k] == 0) {
+				Node* node = malloc(sizeof(Node));
+				node->val = k;
+				node->next = NULL;
+				enqueue(rootQ, node);
+			}
+		}
+	}
+
 	//sort
 	int i = 0;
 	while (rootQ->len != 0) {
@@ -75,22 +97,45 @@ void topologicalSort(int deps[NUM_TASKS][NUM_TASKS], GraphInfo* gi, Queue* rootQ
 			levelTable[u] = i;
 			//dequeue
 			dequeue(rootQ);
-			// search all nearest successors
-			int v = 0;
-			for (; v < NUM_TASKS; v++) {
-				//find successor
-				if (deps[u][v] == 1) {
-					// remove edge
-					deps[u][v] = 0;
-					gi->indeg[v]--;
-					gi->numEdges--;
-					// no predecessor 
-					if (gi->indeg[v] == 0) {
-						//enqueue
-						Node* node = malloc(sizeof(Node));
-						node->val = v;
-						node->next = NULL;
-						enqueue(rootQ, node);
+			if (mode == ASAP) {
+				// search all nearest successors
+				int v = 0;
+				for (; v < NUM_TASKS; v++) {
+					//find successor
+					if (deps[u][v] == 1) {
+						// remove edge
+						deps[u][v] = 0;
+						gi->indeg[v]--;
+						gi->numEdges--;
+						// no predecessor 
+						if (gi->indeg[v] == 0) {
+							//enqueue
+							Node* node = malloc(sizeof(Node));
+							node->val = v;
+							node->next = NULL;
+							enqueue(rootQ, node);
+						}
+					}
+				}
+			}
+			if (mode == ALAP) {
+				// search all nearest predecessor
+				int v = 0;
+				for (; v < NUM_TASKS; v++) {
+					//find predecessor
+					if (deps[v][u] == 1) {
+						// remove edge
+						deps[v][u] = 0;
+						gi->outdeg[v]--;
+						gi->numEdges--;
+						// no successor 
+						if (gi->outdeg[v] == 0) {
+							//enqueue
+							Node* node = malloc(sizeof(Node));
+							node->val = v;
+							node->next = NULL;
+							enqueue(rootQ, node);
+						}
 					}
 				}
 			}

@@ -27,7 +27,9 @@ void test_setGraphInfo() {
         {0, 0, 0, 0, 0, 0, 0, 0},
     };
 
-    GraphInfo gi = {.indeg = {0, 0, 0, 0, 0, 0, 0, 0}, .numEdges = 0};
+    GraphInfo gi = {.indeg = {0, 0, 0, 0, 0, 0, 0, 0}, 
+                    .outdeg = {0, 0, 0, 0, 0, 0, 0, 0},
+                    .numEdges = 0};
     setGraphInfo(workloadDependencies, &gi);
     int i = 0;
     for (; i < NUM_TASKS; i++) {
@@ -58,6 +60,36 @@ void test_setGraphInfo() {
     printf("indegree of %d: %d\n", 7, gi.indeg[7]);
     assert(gi.indeg[7] == 2);
     
+    i = 0;
+    for (; i < NUM_TASKS; i++) {
+        printf("outdegree of %d : %d\n", i, gi.outdeg[i]);
+    }
+    
+    printf("outdegree of %d: %d\n", 0, gi.outdeg[0]);
+    assert(gi.outdeg[0] == 0);
+    
+    printf("outdegree of %d: %d\n", 1, gi.outdeg[1]);
+    assert(gi.outdeg[1] == 1);
+        
+    printf("outdegree of %d: %d\n", 2, gi.outdeg[2]);
+    assert(gi.outdeg[2] == 2);
+    
+    printf("outdegree of %d: %d\n", 3, gi.outdeg[3]);
+    assert(gi.outdeg[3] == 0);
+    
+    printf("outdegree of %d: %d\n", 4, gi.outdeg[4]);
+    assert(gi.outdeg[4] == 0);
+
+    printf("outdegree of %d: %d\n", 5, gi.outdeg[5]);
+    assert(gi.outdeg[5] == 1);
+
+    printf("outdegree of %d: %d\n", 6, gi.outdeg[6]);
+    assert(gi.outdeg[6] == 1);
+
+    printf("outdegree of %d: %d\n", 7, gi.outdeg[7]);
+    assert(gi.outdeg[7] == 0);
+
+
     printf("number of edges: %d\n", gi.numEdges);
     assert(gi.numEdges == 5);
 
@@ -87,7 +119,9 @@ void test_setGraphInfo_2() {
         {0, 0, 0, 0, 0, 0, 0, 0},
     };
 
-    GraphInfo gi = {.indeg = {0, 0, 0, 0, 0, 0, 0, 0}, .numEdges = 0};
+    GraphInfo gi = {.indeg = {0, 0, 0, 0, 0, 0, 0, 0}, 
+                    .outdeg = {0, 0, 0, 0, 0, 0, 0, 0},
+                    .numEdges = 0};
     setGraphInfo(workloadDependencies, &gi);
     int i = 0;
     for (; i < NUM_TASKS; i++) {
@@ -121,6 +155,36 @@ void test_setGraphInfo_2() {
     printf("number of edges: %d\n", gi.numEdges);
     assert(gi.numEdges == 3);
 
+    i = 0;
+    for (; i < NUM_TASKS; i++) {
+        printf("outdegree of %d : %d\n", i, gi.outdeg[i]);
+    }
+    
+    printf("outdegree of %d: %d\n", 0, gi.outdeg[0]);
+    assert(gi.outdeg[0] == 0);
+    
+    printf("outdegree of %d: %d\n", 1, gi.outdeg[1]);
+    assert(gi.outdeg[1] == 1);
+        
+    printf("outdegree of %d: %d\n", 2, gi.outdeg[2]);
+    assert(gi.outdeg[2] == 0);
+    
+    printf("outdegree of %d: %d\n", 3, gi.outdeg[3]);
+    assert(gi.outdeg[3] == 0);
+    
+    printf("outdegree of %d: %d\n", 4, gi.outdeg[4]);
+    assert(gi.outdeg[4] == 0);
+
+    printf("outdegree of %d: %d\n", 5, gi.outdeg[5]);
+    assert(gi.outdeg[5] == 1);
+
+    printf("outdegree of %d: %d\n", 6, gi.outdeg[6]);
+    assert(gi.outdeg[6] == 1);
+
+    printf("outdegree of %d: %d\n", 7, gi.outdeg[7]);
+    assert(gi.outdeg[7] == 0);
+
+
     printf("PASSED: test_setGraphInfo_2\n");
 }
 
@@ -147,7 +211,9 @@ void test_setGraphInfo_3() {
         {0, 0, 0, 0, 0, 0, 0, 0},
     };
 
-    GraphInfo gi = {.indeg = {0, 0, 0, 0, 0, 0, 0, 0}, .numEdges = 0};
+    GraphInfo gi = {.indeg = {0, 0, 0, 0, 0, 0, 0, 0}, 
+                    .outdeg = {0, 0, 0, 0, 0, 0, 0, 0},
+                    .numEdges = 0};
     setGraphInfo(workloadDependencies, &gi);
     int i = 0;
     for (; i < NUM_TASKS; i++) {
@@ -177,7 +243,38 @@ void test_setGraphInfo_3() {
 
     printf("indegree of %d: %d\n", 7, gi.indeg[7]);
     assert(gi.indeg[7] == 1);
+
+
+    i = 0;
+    for (; i < NUM_TASKS; i++) {
+        printf("outdegree of %d : %d\n", i, gi.outdeg[i]);
+    }
     
+    printf("outdegree of %d: %d\n", 0, gi.outdeg[0]);
+    assert(gi.outdeg[0] == 0);
+    
+    printf("outdegree of %d: %d\n", 1, gi.outdeg[1]);
+    assert(gi.outdeg[1] == 0);
+        
+    printf("outdegree of %d: %d\n", 2, gi.outdeg[2]);
+    assert(gi.outdeg[2] == 1);
+    
+    printf("outdegree of %d: %d\n", 3, gi.outdeg[3]);
+    assert(gi.outdeg[3] == 0);
+    
+    printf("outdegree of %d: %d\n", 4, gi.outdeg[4]);
+    assert(gi.outdeg[4] == 1);
+
+    printf("outdegree of %d: %d\n", 5, gi.outdeg[5]);
+    assert(gi.outdeg[5] == 0);
+
+    printf("outdegree of %d: %d\n", 6, gi.outdeg[6]);
+    assert(gi.outdeg[6] == 1);
+
+    printf("outdegree of %d: %d\n", 7, gi.outdeg[7]);
+    assert(gi.outdeg[7] == 0);
+
+
     printf("number of edges: %d\n", gi.numEdges);
     assert(gi.numEdges == 3);
 
@@ -242,7 +339,7 @@ void test_queue() {
     
 }
 
-void test_topologicalsort() {
+void test_topologicalsort_ASAP() {
     int workloadDependencies[8][8] = {
         {0, 0, 0, 0, 0, 0, 0, 0},
         {1, 0, 0, 0, 0, 0, 0, 0},
@@ -265,7 +362,9 @@ void test_topologicalsort() {
         {0, 0, 0, 0, 0, 0, 0, 0},
     };
 
-    GraphInfo gi = {.indeg = {0, 0, 0, 0, 0, 0, 0, 0}, .numEdges = 0};
+    GraphInfo gi = {.indeg = {0, 0, 0, 0, 0, 0, 0, 0}, 
+                    .outdeg = {0, 0, 0, 0, 0, 0, 0, 0},
+                    .numEdges = 0};
     setGraphInfo(workloadDependencies, &gi);
 
     rootQ = malloc(sizeof(Queue));
@@ -277,7 +376,7 @@ void test_topologicalsort() {
 
     int levelTable[NUM_TASKS] = {0};
 
-    topologicalSort(deps, &gi, rootQ, sortedTasks, levelTable);
+    topologicalSort(deps, &gi, rootQ, sortedTasks, levelTable, ASAP);
     printf("indegree of %d: %d\n", 0, gi.indeg[0]);
     assert(gi.indeg[0] == 0);
     
@@ -344,7 +443,7 @@ void test_topologicalsort() {
         cur = cur->next;
     }
 
-    printf("PASSED: test_topologicalsort\n");
+    printf("PASSED: test_topologicalsort_ASAP\n");
 
     cur = rootQ->head;
     while (cur != NULL) {
@@ -367,7 +466,7 @@ void test_topologicalsort() {
     
 }
 
-void test_topologicalsort_2() {
+void test_topologicalsort_ASAP_2() {
     int workloadDependencies[8][8] = {
         {0, 0, 0, 0, 0, 0, 0, 0},
         {1, 0, 0, 0, 0, 0, 0, 0},
@@ -390,7 +489,9 @@ void test_topologicalsort_2() {
         {0, 0, 0, 0, 0, 0, 0, 0},
     };
     
-    GraphInfo gi = {.indeg = {0, 0, 0, 0, 0, 0, 0, 0}, .numEdges = 0};
+    GraphInfo gi = {.indeg = {0, 0, 0, 0, 0, 0, 0, 0}, 
+                    .outdeg = {0, 0, 0, 0, 0, 0, 0, 0},
+                    .numEdges = 0};
     setGraphInfo(workloadDependencies, &gi);
     rootQ = malloc(sizeof(Queue));
     rootQ->head=NULL;
@@ -401,7 +502,7 @@ void test_topologicalsort_2() {
 
     int levelTable[NUM_TASKS] = {0};
     
-    topologicalSort(deps, &gi, rootQ, sortedTasks, levelTable);
+    topologicalSort(deps, &gi, rootQ, sortedTasks, levelTable, ASAP);
     printf("indegree of %d: %d\n", 0, gi.indeg[0]);
     assert(gi.indeg[0] == 0);
     
@@ -468,11 +569,30 @@ void test_topologicalsort_2() {
         cur = cur->next;
     }
 
-    printf("PASSED: test_topologicalsort_2\n");
+    printf("PASSED: test_topologicalsort_ASAP_2\n");
+
+    cur = rootQ->head;
+    while (cur != NULL) {
+        Node* tmp = cur->next;
+        free(cur);
+        cur = tmp;
+    }
+    i = 0;
+    for (; i < NUM_TASKS; i++) {
+        if (sortedTasks[i].len != 0) {
+            cur = sortedTasks[i].head;
+            while (cur != NULL) {
+                Node* tmp = cur->next;
+                free(cur);
+                cur = tmp;
+            }
+        }
+    }
+    free(rootQ);
     
 }
 
-void test_topologicalsort_3() {
+void test_topologicalsort_ASAP_3() {
    int workloadDependencies[8][8] = {
         {0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0},
@@ -495,7 +615,9 @@ void test_topologicalsort_3() {
         {0, 0, 0, 0, 0, 0, 0, 0},
     };
 
-    GraphInfo gi = {.indeg = {0, 0, 0, 0, 0, 0, 0, 0}, .numEdges = 0};
+    GraphInfo gi = {.indeg = {0, 0, 0, 0, 0, 0, 0, 0}, 
+                    .outdeg = {0, 0, 0, 0, 0, 0, 0, 0},
+                    .numEdges = 0};
     setGraphInfo(workloadDependencies, &gi);
 
     rootQ = malloc(sizeof(Queue));
@@ -507,7 +629,7 @@ void test_topologicalsort_3() {
 
     int levelTable[NUM_TASKS] = {0};
 
-    topologicalSort(deps, &gi, rootQ, sortedTasks, levelTable);
+    topologicalSort(deps, &gi, rootQ, sortedTasks, levelTable, ASAP);
     printf("indegree of %d: %d\n", 0, gi.indeg[0]);
     assert(gi.indeg[0] == 0);
     
@@ -564,7 +686,7 @@ void test_topologicalsort_3() {
     }
 
     
-    printf("PASSED: test_topologicalsort_3\n");
+    printf("PASSED: test_topologicalsort_ASAP_3\n");
 
     cur = rootQ->head;
     while (cur != NULL) {
@@ -587,13 +709,387 @@ void test_topologicalsort_3() {
     
 }
 
+void test_topologicalsort_ALAP() {
+    int workloadDependencies[8][8] = {
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {1, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 1, 0, 0, 0, 1},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 1, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 1},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+    };
+
+    int deps[8][8] = {
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {1, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 1, 0, 0, 0, 1},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 1, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 1},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+    };
+
+    GraphInfo gi = {.indeg = {0, 0, 0, 0, 0, 0, 0, 0}, 
+                    .outdeg = {0, 0, 0, 0, 0, 0, 0, 0},
+                    .numEdges = 0};
+    setGraphInfo(workloadDependencies, &gi);
+
+    rootQ = malloc(sizeof(Queue));
+    rootQ->head=NULL;
+    rootQ->len=0;
+    rootQ->tail=NULL;
+
+    Queue sortedTasks[NUM_TASKS] = {{.head = NULL, .len=0, .tail = NULL}};
+
+    int levelTable[NUM_TASKS] = {0};
+
+    topologicalSort(deps, &gi, rootQ, sortedTasks, levelTable, ALAP);
+    printf("outdegree of %d: %d\n", 0, gi.outdeg[0]);
+    assert(gi.outdeg[0] == 0);
+    
+    printf("outdegree of %d: %d\n", 1, gi.outdeg[1]);
+    assert(gi.outdeg[1] == 0);
+        
+    printf("outdegree of %d: %d\n", 2, gi.outdeg[2]);
+    assert(gi.outdeg[2] == 0);
+    
+    printf("outdegree of %d: %d\n", 3, gi.outdeg[3]);
+    assert(gi.outdeg[3] == 0);
+    
+    printf("outdegree of %d: %d\n", 4, gi.outdeg[4]);
+    assert(gi.outdeg[4] == 0);
+
+    printf("outdegree of %d: %d\n", 5, gi.outdeg[5]);
+    assert(gi.outdeg[5] == 0);
+
+    printf("outdegree of %d: %d\n", 6, gi.outdeg[6]);
+    assert(gi.outdeg[6] == 0);
+
+    printf("outdegree of %d: %d\n", 7, gi.outdeg[7]);
+    assert(gi.outdeg[7] == 0);
+    
+    printf("number of edges: %d\n", gi.numEdges);
+    assert(gi.numEdges == 0);
+
+
+    printf("levels of sortedTasks should be : %d\n", 3);
+    assert(sortedTasks[0].len != 0 && sortedTasks[1].len != 0 &&
+          sortedTasks[2].len != 0);
+    assert(sortedTasks[3].len == 0 && sortedTasks[4].len == 0 &&
+          sortedTasks[5].len == 0 && sortedTasks[6].len == 0 &&
+          sortedTasks[7].len == 0 && sortedTasks[8].len == 0);
+
+    printf("Number of first level of sorted Tasks got: %d\n", sortedTasks[0].len);
+    assert(sortedTasks[0].len == 4);
+
+    int i = 0;
+    Node* cur = sortedTasks[0].head;
+    for (; i < sortedTasks[0].len; i++) {
+        printf("first level of sorted Tasks got: %d\n", cur->val);
+        cur = cur->next;
+    }
+    
+
+    printf("Number of second level of sorted Tasks got: %d\n", sortedTasks[1].len);
+    assert(sortedTasks[1].len == 3);
+
+    i = 0;
+    cur = sortedTasks[1].head;
+    for (; i < sortedTasks[1].len; i++) {
+        printf("second level of sorted Tasks got: %d\n", cur->val);
+        cur = cur->next;
+    }
+
+    printf("Number of third level of sorted Tasks got: %d\n", sortedTasks[2].len);
+    assert(sortedTasks[2].len == 1);
+
+    i = 0;
+    cur = sortedTasks[2].head;
+    for (; i < sortedTasks[2].len; i++) {
+        printf("third level of sorted Tasks got: %d\n", cur->val);
+        cur = cur->next;
+    }
+
+    printf("PASSED: test_topologicalsort_ALAP\n");
+
+    cur = rootQ->head;
+    while (cur != NULL) {
+        Node* tmp = cur->next;
+        free(cur);
+        cur = tmp;
+    }
+    i = 0;
+    for (; i < NUM_TASKS; i++) {
+        if (sortedTasks[i].len != 0) {
+            cur = sortedTasks[i].head;
+            while (cur != NULL) {
+                Node* tmp = cur->next;
+                free(cur);
+                cur = tmp;
+            }
+        }
+    }
+    free(rootQ);
+    
+}
+
+void test_topologicalsort_ALAP_2() {
+    int workloadDependencies[8][8] = {
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {1, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 1, 0},
+        {0, 0, 0, 0, 0, 0, 0, 1},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+    };
+
+    int deps[8][8] = {
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {1, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 1, 0},
+        {0, 0, 0, 0, 0, 0, 0, 1},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+    };
+    
+    GraphInfo gi = {.indeg = {0, 0, 0, 0, 0, 0, 0, 0}, 
+                    .outdeg = {0, 0, 0, 0, 0, 0, 0, 0},
+                    .numEdges = 0};
+    setGraphInfo(workloadDependencies, &gi);
+    rootQ = malloc(sizeof(Queue));
+    rootQ->head=NULL;
+    rootQ->len=0;
+    rootQ->tail=NULL;
+
+    Queue sortedTasks[NUM_TASKS] = {{.head = NULL, .len=0, .tail = NULL}};
+
+    int levelTable[NUM_TASKS] = {0};
+    
+    topologicalSort(deps, &gi, rootQ, sortedTasks, levelTable, ALAP);
+    printf("outdegree of %d: %d\n", 0, gi.outdeg[0]);
+    assert(gi.outdeg[0] == 0);
+    
+    printf("outdegree of %d: %d\n", 1, gi.outdeg[1]);
+    assert(gi.outdeg[1] == 0);
+        
+    printf("outdegree of %d: %d\n", 2, gi.outdeg[2]);
+    assert(gi.outdeg[2] == 0);
+    
+    printf("outdegree of %d: %d\n", 3, gi.outdeg[3]);
+    assert(gi.outdeg[3] == 0);
+    
+    printf("outdegree of %d: %d\n", 4, gi.outdeg[4]);
+    assert(gi.outdeg[4] == 0);
+
+    printf("outdegree of %d: %d\n", 5, gi.outdeg[5]);
+    assert(gi.outdeg[5] == 0);
+
+    printf("outdegree of %d: %d\n", 6, gi.outdeg[6]);
+    assert(gi.outdeg[6] == 0);
+
+    printf("outdegree of %d: %d\n", 7, gi.outdeg[7]);
+    assert(gi.outdeg[7] == 0);
+    
+    printf("number of edges: %d\n", gi.numEdges);
+    assert(gi.numEdges == 0);
+
+
+    printf("levels of sortedTasks should be : %d\n", 3);
+    assert(sortedTasks[0].len != 0 && sortedTasks[1].len != 0 &&
+          sortedTasks[2].len != 0);
+    assert(sortedTasks[3].len == 0 && sortedTasks[4].len == 0 &&
+          sortedTasks[5].len == 0 && sortedTasks[6].len == 0 &&
+          sortedTasks[7].len == 0 && sortedTasks[8].len == 0);
+
+    printf("Number of first level of sorted Tasks got: %d\n", sortedTasks[0].len);
+    assert(sortedTasks[0].len == 5);
+
+    int i = 0;
+    Node* cur = sortedTasks[0].head;
+    for (; i < sortedTasks[0].len; i++) {
+        printf("first level of sorted Tasks got: %d\n", cur->val);
+        cur = cur->next;
+    }
+    
+
+    printf("Number of second level of sorted Tasks got: %d\n", sortedTasks[1].len);
+    assert(sortedTasks[1].len == 2);
+
+    i = 0;
+    cur = sortedTasks[1].head;
+    for (; i < sortedTasks[1].len; i++) {
+        printf("second level of sorted Tasks got: %d\n", cur->val);
+        cur = cur->next;
+    }
+
+    printf("Number of third level of sorted Tasks got: %d\n", sortedTasks[2].len);
+    assert(sortedTasks[2].len == 1);
+
+    i = 0;
+    cur = sortedTasks[2].head;
+    for (; i < sortedTasks[2].len; i++) {
+        printf("third level of sorted Tasks got: %d\n", cur->val);
+        cur = cur->next;
+    }
+
+    printf("PASSED: test_topologicalsort_ALAP_2\n");
+
+    cur = rootQ->head;
+    while (cur != NULL) {
+        Node* tmp = cur->next;
+        free(cur);
+        cur = tmp;
+    }
+    i = 0;
+    for (; i < NUM_TASKS; i++) {
+        if (sortedTasks[i].len != 0) {
+            cur = sortedTasks[i].head;
+            while (cur != NULL) {
+                Node* tmp = cur->next;
+                free(cur);
+                cur = tmp;
+            }
+        }
+    }
+    free(rootQ);
+    
+}
+
+void test_topologicalsort_ALAP_3() {
+     int workloadDependencies[8][8] = {
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 1, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 1, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 1},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+    };
+
+    int deps[8][8] = {
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 1, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 1, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 1},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+    };
+    GraphInfo gi = {.indeg = {0, 0, 0, 0, 0, 0, 0, 0}, 
+                    .outdeg = {0, 0, 0, 0, 0, 0, 0, 0},
+                    .numEdges = 0};
+    setGraphInfo(workloadDependencies, &gi);
+    rootQ = malloc(sizeof(Queue));
+    rootQ->head=NULL;
+    rootQ->len=0;
+    rootQ->tail=NULL;
+
+    Queue sortedTasks[NUM_TASKS] = {{.head = NULL, .len=0, .tail = NULL}};
+
+    int levelTable[NUM_TASKS] = {0};
+    
+    topologicalSort(deps, &gi, rootQ, sortedTasks, levelTable, ALAP);
+    printf("outdegree of %d: %d\n", 0, gi.outdeg[0]);
+    assert(gi.outdeg[0] == 0);
+    
+    printf("outdegree of %d: %d\n", 1, gi.outdeg[1]);
+    assert(gi.outdeg[1] == 0);
+        
+    printf("outdegree of %d: %d\n", 2, gi.outdeg[2]);
+    assert(gi.outdeg[2] == 0);
+    
+    printf("outdegree of %d: %d\n", 3, gi.outdeg[3]);
+    assert(gi.outdeg[3] == 0);
+    
+    printf("outdegree of %d: %d\n", 4, gi.outdeg[4]);
+    assert(gi.outdeg[4] == 0);
+
+    printf("outdegree of %d: %d\n", 5, gi.outdeg[5]);
+    assert(gi.outdeg[5] == 0);
+
+    printf("outdegree of %d: %d\n", 6, gi.outdeg[6]);
+    assert(gi.outdeg[6] == 0);
+
+    printf("outdegree of %d: %d\n", 7, gi.outdeg[7]);
+    assert(gi.outdeg[7] == 0);
+    
+    printf("number of edges: %d\n", gi.numEdges);
+    assert(gi.numEdges == 0);
+
+
+    printf("levels of sortedTasks should be : %d\n", 2);
+    assert(sortedTasks[0].len != 0 && sortedTasks[1].len != 0 );
+    assert(sortedTasks[2].len == 0 && sortedTasks[3].len == 0 && sortedTasks[4].len == 0 &&
+          sortedTasks[5].len == 0 && sortedTasks[6].len == 0 &&
+          sortedTasks[7].len == 0 && sortedTasks[8].len == 0);
+
+    printf("Number of first level of sorted Tasks got: %d\n", sortedTasks[0].len);
+    assert(sortedTasks[0].len == 5);
+
+    int i = 0;
+    Node* cur = sortedTasks[0].head;
+    for (; i < sortedTasks[0].len; i++) {
+        printf("first level of sorted Tasks got: %d\n", cur->val);
+        cur = cur->next;
+    }
+    
+
+    printf("Number of second level of sorted Tasks got: %d\n", sortedTasks[1].len);
+    assert(sortedTasks[1].len == 3);
+
+    i = 0;
+    cur = sortedTasks[1].head;
+    for (; i < sortedTasks[1].len; i++) {
+        printf("second level of sorted Tasks got: %d\n", cur->val);
+        cur = cur->next;
+    }
+
+    printf("PASSED: test_topologicalsort_ALAP_3\n");
+
+    cur = rootQ->head;
+    while (cur != NULL) {
+        Node* tmp = cur->next;
+        free(cur);
+        cur = tmp;
+    }
+    i = 0;
+    for (; i < NUM_TASKS; i++) {
+        if (sortedTasks[i].len != 0) {
+            cur = sortedTasks[i].head;
+            while (cur != NULL) {
+                Node* tmp = cur->next;
+                free(cur);
+                cur = tmp;
+            }
+        }
+    }
+    free(rootQ);
+    
+}
+
+
 int main() {
     test_setGraphInfo();
     test_setGraphInfo_2();
     test_setGraphInfo_3();
-    test_topologicalsort();
-    test_topologicalsort_2();
-    test_topologicalsort_3();
+
+    test_topologicalsort_ASAP();
+    test_topologicalsort_ASAP_2();
+    test_topologicalsort_ASAP_3();
+
+    test_topologicalsort_ALAP();
+    test_topologicalsort_ALAP_2();
+    test_topologicalsort_ALAP_3();
+
     //test_queue();
     return 0;
 }

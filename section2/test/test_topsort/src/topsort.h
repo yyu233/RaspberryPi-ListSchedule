@@ -2,6 +2,8 @@
 #define _TOPSORT_BODY_
 
 #define NUM_TASKS 8
+#define ASAP 0
+#define ALAP 1
 
 typedef struct Node{
     int val;
@@ -15,6 +17,7 @@ typedef struct {
 } Queue;
 
 typedef struct {
+    int outdeg[NUM_TASKS];
     int indeg[NUM_TASKS];
     int numEdges;
 } GraphInfo;
@@ -32,6 +35,7 @@ void dequeue(Queue* q);
 
 void setGraphInfo(int workloadDependencies [NUM_TASKS][NUM_TASKS], GraphInfo* gi);
 
-void topologicalSort(int deps[NUM_TASKS][NUM_TASKS], GraphInfo* gi, Queue* rootQ, Queue sortedTasks[NUM_TASKS], int levelTable[NUM_TASKS]);
+void topologicalSort(int deps[NUM_TASKS][NUM_TASKS], GraphInfo* gi, Queue* rootQ, 
+                    Queue sortedTasks[NUM_TASKS], int levelTable[NUM_TASKS], int mode);
 
 #endif
