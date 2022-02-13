@@ -53,6 +53,7 @@ void freeMem() {
 			}
 		}
 		free(rootQ);
+		free(gi);
 }
 
 void setGraphInfo(int workloadDependencies[NUM_TASKS][NUM_TASKS], GraphInfo* gi) {
@@ -84,10 +85,11 @@ void setupTopoSort(int mode) {
 		}
 	}
 
-	gi = {.indeg = {0, 0, 0, 0, 0, 0, 0, 0}, 
-                    .outdeg = {0, 0, 0, 0, 0, 0, 0, 0},
-                    .numEdges = 0};
-    setGraphInfo(workloadDependencies, &gi);
+	gi = malloc(sizeof(GraphInfo));
+	gi->indeg = {0, 0, 0, 0, 0, 0, 0, 0};
+	gi->outdeg = {0, 0, 0, 0, 0, 0, 0, 0};
+	gi->numEdges = 0;
+    setGraphInfo(workloadDependencies, gi);
 
     rootQ = malloc(sizeof(Queue));
     rootQ->head=NULL;
@@ -233,7 +235,6 @@ void learn_workloads(SharedVariable* v) {
 
 	// 2. alap
 	topologicalSort(ALAP);
-
 	
 
 	// Tip 1. You can call each workload function here like:

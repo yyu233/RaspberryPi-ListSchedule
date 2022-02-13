@@ -39,8 +39,16 @@ void freeMem() {
 		}
 		int i = 0;
 		for (; i < NUM_TASKS; i++) {
-			if (sortedTasks[i].len != 0) {
-				cur = sortedTasks[i].head;
+			if (sortedTasksASAP[i].len != 0) {
+				cur = sortedTasksASAP[i].head;
+				while (cur != NULL) {
+					Node* tmp = cur->next;
+					free(cur);
+					cur = tmp;
+				}
+			}
+			if (sortedTasksALAP[i].len != 0) {
+				cur = sortedTasksALAP[i].head;
 				while (cur != NULL) {
 					Node* tmp = cur->next;
 					free(cur);
@@ -52,14 +60,17 @@ void freeMem() {
 }
 
 
-void bubbleSort (int arr [], int start, int end, long long workloadDeadlines[]) {
+void bubbleSort (int arr [], int start, int end, long long workloadDeadlines[], 
+				 int asap [], int alap[]) {
 	int i = start;
 	for (; i < end - 1; i++) {
 		int j = start;
-		for (; j < end - i - 1; j++) {
+		for (; j < end - (i - start) - 1; j++) {
 			// mobility 
-			int curMob= alap[j] - asap[j];
-			int nextMob = alap[j + 1] - asap[j]; 
+			int curMob= alap[arr[j]] - asap[arr[j]];
+			int nextMob = alap[arr[j + 1]] - asap[arr[j + 1]];
+			printf("DEBUG: bubbleSort: arr[%d] : %d : curMob : %d\n", j, arr[j], curMob); 
+			printf("DEBUG: bubbleSort: arr[%d] : %d : nextMob : %d\n", j + 1, arr[j + 1], nextMob); 
 			if (curMob > nextMob) {
 				int tmp = arr[j];
 				arr[j] = arr[j + 1];
@@ -67,7 +78,7 @@ void bubbleSort (int arr [], int start, int end, long long workloadDeadlines[]) 
 			}
 			// EDF
 			if (curMob == nextMob) {
-				if (workloadDeadlines[j] > workloadDeadlines[j + 1]) {
+				if (workloadDeadlines[arr[j]] > workloadDeadlines[arr[j + 1]]) {
 					int tmp = arr[j];
 					arr[j] = arr[j + 1];
 					arr[j + 1] = tmp;
@@ -75,23 +86,30 @@ void bubbleSort (int arr [], int start, int end, long long workloadDeadlines[]) 
 			}
 		}
 	}
+	i = start;
+	for (; i < end; i++) {
+		printf("DEBUG: bubbleSort: arr[%d] : %d\n", i, arr[i]);
+	}
 }
 
-void setCompleteSortedList(long long workloadDeadlines[]) {
+void setCompleteSortedList(int completeSortedList[], Queue sortedTasksASAP [NUM_TASKS], 
+						long long workloadDeadlines[], int asap[], int alap[]) {
 	int i = 0;
 	int j = 0;
 	int start = 0;
 	for (; i < NUM_TASKS; i++) {
-		if (sortedTasks[i].len == 0) {
+		if (sortedTasksASAP[i].len == 0) {
+			printf("DEBUGE: i: %d  BREAK\n", i);
 			break;
 		}
-		Node* cur = sortedTasks[i].head;
+		Node* cur = sortedTasksASAP[i].head;
 		while (cur != NULL) {
 			completeSortedList[j] = cur->val;
+			printf("DEBUG: completeSortedList[%d] : %d\n", j, completeSortedList[j]);
 			j++;
 			cur = cur->next;
 		}
-		bubbleSort(completeSortedList, start, j, workloadDeadlines);
+		bubbleSort(completeSortedList, start, j, workloadDeadlines, asap, alap);
 		start = j;
 	}
 }

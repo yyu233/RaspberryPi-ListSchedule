@@ -26,7 +26,8 @@ int maxDepth;
 
 //heap, remember to free
 Queue* rootQ;
-Queue sortedTasks[NUM_TASKS];
+Queue sortedTasksASAP[NUM_TASKS];
+Queue sortedTasksALAP[NUM_TASKS];
 int completeSortedList[NUM_TASKS];
 
 int asap[NUM_TASKS];
@@ -38,9 +39,10 @@ void dequeue(Queue* q);
 
 void freeMem();
 
-void bubbleSort (int arr [], int start, int end, long long workloadDeadlines[]);
+void bubbleSort (int arr [], int start, int end, long long workloadDeadlines[], int asap[], int alap[]);
 
-void setCompleteSortedList(long long workloadDeadlines[]);
+void setCompleteSortedList(int completeSortedList[], Queue sortedTaskASAP [NUM_TASKS], 
+                    long long workloadDeadlines[], int asap[], int alap[]);
 
 void setGraphInfo(int workloadDependencies [NUM_TASKS][NUM_TASKS], GraphInfo* gi);
 
