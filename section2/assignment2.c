@@ -20,97 +20,192 @@ void enqueue(Queue* q, Node* node) {
 
 void dequeue(Queue* q) {
 	if (q->len == 0) {
-		printDBG("ERROR: dequeue empty queue \n");
+		//free memory
+		printf("ERROR: dequeue empty queue \n");
 		exit(-1);
 	}
 	q->len--;
 	Node* tmp = q->head->next;
-	q->head->next = NULL;
+	free(q->head);
 	q->head = tmp;
 	if (q->len == 0) {
 		q->tail = NULL;
 	}
 }
 
-void setGraphInfo(int* workloadDependencies, GraphInfo* gi) {
-	int i = 0;
-	int j = 0;
-	for (; j < NUM_TASKS; j++) {
+void freeMem() {
+	    //free memory
+		Node* cur = rootQ->head;
+		while (cur != NULL) {
+			Node* tmp = cur->next;
+			free(cur);
+			cur = tmp;
+		}
+		int i = 0;
 		for (; i < NUM_TASKS; i++) {
-			gi->indeg[j] += workloadDependencies[i * NUM_TASKS + j];
+			if (sortedTasks[i].len != 0) {
+				cur = sortedTasks[i].head;
+				while (cur != NULL) {
+					Node* tmp = cur->next;
+					free(cur);
+					cur = tmp;
+				}
+			}
+		}
+		free(rootQ);
+}
+
+void setGraphInfo(int workloadDependencies[NUM_TASKS][NUM_TASKS], GraphInfo* gi) {
+	int j = 0;
+	//set indegree and edges
+	for (; j < NUM_TASKS; j++) {
+		int i = 0;
+		for (; i < NUM_TASKS; i++) {
+			gi->indeg[j] += workloadDependencies[i][j];
 		}
 		gi->numEdges += gi->indeg[j];
+	}
+	//set outdegree
+	int i = 0;
+	for (; i < NUM_TASKS; i++) {
+		j = 0;
+		for (; j <NUM_TASKS; j++) {
+			gi->outdeg[i] += workloadDependencies[i][j];
+		}
+	}
+}
+
+void setupTopoSort(int mode) {
+	int i = 0;
+	for (; i < NUM_TASKS; i++) {
+		int j = 0;
+		for (; j < NUM_TASKS; j++) {
+			deps[i][j] = workloadDependencies[i][j];
+		}
+	}
+
+	gi = {.indeg = {0, 0, 0, 0, 0, 0, 0, 0}, 
+                    .outdeg = {0, 0, 0, 0, 0, 0, 0, 0},
+                    .numEdges = 0};
+    setGraphInfo(workloadDependencies, &gi);
+
+    rootQ = malloc(sizeof(Queue));
+    rootQ->head=NULL;
+    rootQ->len=0;
+    rootQ->tail=NULL;
+
+	if (mode == ASAP) {
+		asap = {0};
+		sortedTasksASAP = {{.head = NULL, .len=0, .tail = NULL}};
+	}
+	if (mode == ALAP) {
+		alap = {0};
+		sortedTasksALAP = {{.head = NULL, .len=0, .tail = NULL}};
 	}
 }
 
 // startNode  1D array
 // deps 2D array
 // output 1D array
-void topologicalSort(int* deps, GraphInfo* gi, Queue* sortedTasks, int* levelTable) {
-	Queue rootQ = {.len = 0, .head = NULL, .tail = NULL};
+void topologicalSort (int mode) {
 	//initialize rootQ
+	setupTopoSort(mode);
+
 	int k = 0;
-	for (; k < NUM_TASKS; k++) {
-		if (gi->indeg[k] == 0) {
-			Node node = {.val = k, .next = NULL};
-			enqueue(&rootQ, &node);
+	if (mode == ASAP) {
+		for (; k < NUM_TASKS; k++) {
+			if (gi->indeg[k] == 0) {
+				Node* node = malloc(sizeof(Node));
+				node->val = k;
+				node->next = NULL;
+				enqueue(rootQ, node);
+			}
+		}
+	}
+	if (mode == ALAP) {
+		for (; k < NUM_TASKS; k++) {
+			if (gi->outdeg[k] == 0) {
+				Node* node = malloc(sizeof(Node));
+				node->val = k;
+				node->next = NULL;
+				enqueue(rootQ, node);
+			}
 		}
 	}
 
 	//sort
 	int i = 0;
-	while (rootQ.len != 0) {
-		//insert rootQ to sorted array
-		sortedTasks[i] = rootQ;
+	while (rootQ->len != 0) {
+		//copy rootQ to sorted array
+		Node* cur = rootQ->head;
+		while (cur != NULL) {
+			Node* elem = malloc(sizeof(Node));
+			elem->val = cur->val;
+			elem->next = NULL;
+			enqueue(&sortedTasks[i], elem); 
+			cur = cur->next;
+		}
 		//find next level of root
 		int j = 0;
-		int n = rootQ.len;
+		int n = rootQ->len;
 		for (; j < n; j++) {
-			int u = rootQ.head->val;
+			int u = rootQ->head->val;
 			//set level
 			levelTable[u] = i;
 			//dequeue
-			dequeue(&rootQ);
-			// search all nearest successors
-			int v = 0;
-			for (; v < NUM_TASKS; v++) {
-				//find successor
-				if (deps[u * NUM_TASKS + v] == 1) {
-					// remove edge
-					deps[u * NUM_TASKS + v] == 0;
-					gi->indeg[v]--;
-					gi->numEdges--;
-					// no predecessor 
-					if (gi->indeg[v] == 0) {
-						//enqueue
-						Node node = {.val = v, .next = NULL};
-						enqueue(&rootQ, &node);
+			dequeue(rootQ);
+			if (mode == ASAP) {
+				// search all nearest successors
+				int v = 0;
+				for (; v < NUM_TASKS; v++) {
+					//find successor
+					if (deps[u][v] == 1) {
+						// remove edge
+						deps[u][v] = 0;
+						gi->indeg[v]--;
+						gi->numEdges--;
+						// no predecessor 
+						if (gi->indeg[v] == 0) {
+							//enqueue
+							Node* node = malloc(sizeof(Node));
+							node->val = v;
+							node->next = NULL;
+							enqueue(rootQ, node);
+						}
+					}
+				}
+			}
+			if (mode == ALAP) {
+				// search all nearest predecessor
+				int v = 0;
+				for (; v < NUM_TASKS; v++) {
+					//find predecessor
+					if (deps[v][u] == 1) {
+						// remove edge
+						deps[v][u] = 0;
+						gi->outdeg[v]--;
+						gi->numEdges--;
+						// no successor 
+						if (gi->outdeg[v] == 0) {
+							//enqueue
+							Node* node = malloc(sizeof(Node));
+							node->val = v;
+							node->next = NULL;
+							enqueue(rootQ, node);
+						}
 					}
 				}
 			}
 		}
 		i++;
 	}
-
+	freeMem();
 	if (gi->numEdges != 0) {
-		printDBG("ERROR: graph contains cycle\n");
+		//free memory
 		exit(-1);
 	}	
 }
 
-void newArrayList(ArrayList* arr, size_t cap) {
-    arr->buf = malloc(cap * sizeof(int));
-	arr->len = 0;
-	arr->cap = cap;
-}
-
-void arrayListAdd(ArrayList* arr, int val) {
-	if (arr->len == arr->cap) {
-		arr->cap *= 2;
-		arr->buf = realloc(arr->buf, arr->cap * sizeof(int));
-	}
-	arr->buf[arr->len++] = val;
-}
 
 // Note: Deadline of each workload is defined in the "workloadDeadlines" variable.
 // i.e., You can access the dealine of the BUTTON thread using workloadDeadlines[BUTTON]
@@ -134,10 +229,12 @@ void learn_workloads(SharedVariable* v) {
 	// thread_twocolor, thread_rgbcolor, thread_aled, thread_buzzer
 
 	// 1. asap
+	topologicalSort(ASAP);
 
 	// 2. alap
+	topologicalSort(ALAP);
 
-	// 3. mobility = alap - asap
+	
 
 	// Tip 1. You can call each workload function here like:
 	// thread_button();
@@ -187,6 +284,10 @@ TaskSelection select_task(SharedVariable* sv, const int* aliveTasks, long long i
 		}
 		++i;
 	}*/
+
+
+
+	
 
 	
 	// 4. schedule

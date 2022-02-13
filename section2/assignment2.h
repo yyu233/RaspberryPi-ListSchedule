@@ -3,48 +3,59 @@
 
 #include "scheduler.h"
 
-typedef struct {
-    int *buf;
-    size_t len;
-    size_t cap;
-} ArrayList;
+struct shared_variable; // Defined in assignment1.h
 
-typedef struct {
+#define NUM_TASKS 8
+#define ASAP 0
+#define ALAP 1
+
+int curDepth;
+int curTask;
+
+typedef struct Node{
     int val;
-    Node* next;
+    struct Node* next;
 } Node;
 
 typedef struct {
-    size_t len;
+    int len;
     Node* head;
     Node* tail;
 } Queue;
 
 typedef struct {
+    int outdeg[NUM_TASKS];
     int indeg[NUM_TASKS];
     int numEdges;
 } GraphInfo;
 
-NUM_TASKS;
+//heap, remember to free
+Queue* rootQ;
+Queue sortedTasksASAP[NUM_TASKS];
+Queue sortedTasksALAP[NUM_TASKS];
 
-Queue sortedTasks[NUM_TASKS];
+GraphInfo gi;
+
+int deps[NUM_TASKS][NUM_TASKS];
 int asap[NUM_TASKS];
 int alap[NUM_TASKS];
-
-struct shared_variable; // Defined in assignment1.h
 
 void enqueue(Queue* q, Node* node);
 
 void dequeue(Queue* q);
+
+void freeMem();
+
+void setGraphInfo(int workloadDependencies [NUM_TASKS][NUM_TASKS], GraphInfo* gi);
+
+void setupTopoSort(int mode);
+
+void topologicalSort(int mode);
 
 // Call at the start part of the program before actual scheduling
 void learn_workloads(struct shared_variable* sv);
 
 // Call in the scheduler thread
 TaskSelection select_task(struct shared_variable* sv, const int* aliveTasks, long long idleTime);
-
-void setGraphInfo(int* workloadDependencies, GraphInfo* gi);
-
-void topologicalSort(int* deps, GraphInfo* gi, Queue* sortedTasks, int* levelTable);
 
 #endif

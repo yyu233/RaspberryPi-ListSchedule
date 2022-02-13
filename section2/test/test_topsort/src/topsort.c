@@ -28,6 +28,71 @@ void dequeue(Queue* q) {
 	}
 }
 
+void freeMem() {
+	    //free memory
+		Node* cur = rootQ->head;
+		while (cur != NULL) {
+			Node* tmp = cur->next;
+			free(cur);
+			cur = tmp;
+		}
+		int i = 0;
+		for (; i < NUM_TASKS; i++) {
+			if (sortedTasks[i].len != 0) {
+				cur = sortedTasks[i].head;
+				while (cur != NULL) {
+					Node* tmp = cur->next;
+					free(cur);
+					cur = tmp;
+				}
+			}
+		}
+		free(rootQ);
+}
+
+void bubbleSort (int arr [], int start, int end) {
+	int i = start;
+	for (; i < end - 1; i++) {
+		int j = start;
+		for (; j < end - i - 1; j++) {
+			// mobility 
+			int curMob= alap[j] - asap[j];
+			int nextMob = alap[j + 1] - asap[j]; 
+			if (curMob > nextMob) {
+				int tmp = arr[j];
+				arr[j] = arr[j + 1];
+				arr[j + 1] = tmp; 
+			}
+			// EDF
+			if (curMob == nextMob) {
+				if (workloadDeadlines[j] > workloadDeadlines[j + 1]) {
+					int tmp = arr[j];
+					arr[j] = arr[j + 1];
+					arr[j + 1] = tmp;
+				}
+			}
+		}
+	}
+}
+
+void setCompleteSortedList() {
+	int i = 0;
+	int j = 0;
+	for (; i < NUM_TASKS; i++) {
+		if (sortedTasks[i].len == 0) {
+			break;
+		}
+		Node* cur = sortedTasks[i].head;
+		while (cur != NULL) {
+			completeSortedList[j] = cur.val;
+			j++;
+			cur = cur->next;
+		}
+		bubbleSort(completeSortedList, i, j)；
+	}
+
+}
+
 void setGraphInfo(int workloadDependencies[NUM_TASKS][NUM_TASKS], GraphInfo* gi) {
 	int j = 0;
 	//set indegree and edges

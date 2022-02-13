@@ -25,6 +25,7 @@ typedef struct {
 //heap, remember to free
 Queue* rootQ;
 Queue sortedTasks[NUM_TASKS];
+int completeSortedList[NUM_TASKS];
 
 int asap[NUM_TASKS];
 int alap[NUM_TASKS];
@@ -32,6 +33,10 @@ int alap[NUM_TASKS];
 void enqueue(Queue* q, Node* node);
 
 void dequeue(Queue* q);
+
+void freeMem();
+
+void setCompleteSortedList();
 
 void setGraphInfo(int workloadDependencies [NUM_TASKS][NUM_TASKS], GraphInfo* gi);
 
