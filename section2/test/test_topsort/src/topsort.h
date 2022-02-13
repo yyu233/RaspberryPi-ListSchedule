@@ -20,9 +20,9 @@ typedef struct {
 } GraphInfo;
 
 //heap, remember to free
-Queue rootQ;
-
+Queue* rootQ;
 Queue sortedTasks[NUM_TASKS];
+
 int asap[NUM_TASKS];
 int alap[NUM_TASKS];
 

@@ -31,10 +31,8 @@ void dequeue(Queue* q) {
 void setGraphInfo(int workloadDependencies[NUM_TASKS][NUM_TASKS], GraphInfo* gi) {
 	int j = 0;
 	for (; j < NUM_TASKS; j++) {
-		//printf("Task: %d\n", j);
 		int i = 0;
 		for (; i < NUM_TASKS; i++) {
-			//printf("workloadDependencies:[%d][%d] : %d\n", workloadDependencies[i][j]);
 			gi->indeg[j] += workloadDependencies[i][j];
 		}
 		gi->numEdges += gi->indeg[j];
@@ -103,8 +101,20 @@ void topologicalSort(int deps[NUM_TASKS][NUM_TASKS], GraphInfo* gi, Queue* rootQ
 		//free memory
 		Node* cur = rootQ->head;
 		while (cur != NULL) {
+			Node* tmp = cur->next;
 			free(cur);
-			cur = cur->next;
+			cur = tmp;
+		}
+		int i = 0;
+		for (; i < NUM_TASKS; i++) {
+			if (sortedTasks[i].len != 0) {
+				cur = sortedTasks[i].head;
+				while (cur != NULL) {
+					Node* tmp = cur->next;
+					free(cur);
+					cur = tmp;
+				}
+			}
 		}
 		free(rootQ);
 		exit(-1);
