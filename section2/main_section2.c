@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
 	signal(SIGINT, signal_handler);
 	init_deferred_buffer(128*1024*1024); // 128MB
 	init_userspace_governor();
-	();
+	init_workload();
 
 	// Initializers that you need to implement
 	init_shared_variable(&v);

@@ -22,6 +22,8 @@ typedef struct {
     int numEdges;
 } GraphInfo;
 
+int maxDepth;
+
 //heap, remember to free
 Queue* rootQ;
 Queue sortedTasks[NUM_TASKS];
@@ -36,7 +38,9 @@ void dequeue(Queue* q);
 
 void freeMem();
 
-void setCompleteSortedList();
+void bubbleSort (int arr [], int start, int end, long long workloadDeadlines[]);
+
+void setCompleteSortedList(long long workloadDeadlines[]);
 
 void setGraphInfo(int workloadDependencies [NUM_TASKS][NUM_TASKS], GraphInfo* gi);
 

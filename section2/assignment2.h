@@ -33,8 +33,7 @@ typedef struct {
 Queue* rootQ;
 Queue sortedTasksASAP[NUM_TASKS];
 Queue sortedTasksALAP[NUM_TASKS];
-
-GraphInfo gi;
+GraphInfo* gi;
 
 int deps[NUM_TASKS][NUM_TASKS];
 int asap[NUM_TASKS];

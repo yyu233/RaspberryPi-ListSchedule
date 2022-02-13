@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "topsort.h"
+#include "workload.h"
 
 void enqueue(Queue* q, Node* node) {
 	if (q->len == 0) {
@@ -50,7 +51,8 @@ void freeMem() {
 		free(rootQ);
 }
 
-void bubbleSort (int arr [], int start, int end) {
+
+void bubbleSort (int arr [], int start, int end, long long workloadDeadlines[]) {
 	int i = start;
 	for (; i < end - 1; i++) {
 		int j = start;
@@ -75,22 +77,23 @@ void bubbleSort (int arr [], int start, int end) {
 	}
 }
 
-void setCompleteSortedList() {
+void setCompleteSortedList(long long workloadDeadlines[]) {
 	int i = 0;
 	int j = 0;
+	int start = 0;
 	for (; i < NUM_TASKS; i++) {
 		if (sortedTasks[i].len == 0) {
 			break;
 		}
 		Node* cur = sortedTasks[i].head;
 		while (cur != NULL) {
-			completeSortedList[j] = cur.val;
+			completeSortedList[j] = cur->val;
 			j++;
 			cur = cur->next;
 		}
-		bubbleSort(completeSortedList, i, j)；
+		bubbleSort(completeSortedList, start, j, workloadDeadlines);
+		start = j;
 	}
-
 }
 
 void setGraphInfo(int workloadDependencies[NUM_TASKS][NUM_TASKS], GraphInfo* gi) {
@@ -159,7 +162,12 @@ void topologicalSort(int deps[NUM_TASKS][NUM_TASKS], GraphInfo* gi, Queue* rootQ
 		for (; j < n; j++) {
 			int u = rootQ->head->val;
 			//set level
-			levelTable[u] = i;
+			if (mode == ASAP) {
+				levelTable[u] = i;
+			}
+			if (mode == ALAP) {
+				levelTable[u] = maxDepth - i;
+			}
 			//dequeue
 			dequeue(rootQ);
 			if (mode == ASAP) {
@@ -206,6 +214,9 @@ void topologicalSort(int deps[NUM_TASKS][NUM_TASKS], GraphInfo* gi, Queue* rootQ
 			}
 		}
 		i++;
+	}
+	if (mode == ASAP) {
+		maxDepth = i - 1;
 	}
 	if (gi->numEdges != 0) {
 		//free memory

@@ -1076,6 +1076,196 @@ void test_topologicalsort_ALAP_3() {
     
 }
 
+void test_setCompleteSortedList() {
+    long long workloadDeadlines[] = {
+        160000,
+        400000,
+        400000,
+        240000,
+        240000,
+        480000,
+        320000,
+        120000,
+    };
+
+    int workloadDependencies[8][8] = {
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {1, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 1, 0, 0, 0, 1},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 1, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 1},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+    };
+
+    int deps[8][8] = {
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {1, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 1, 0, 0, 0, 1},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 1, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 1},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+    };
+
+    //ASAP
+    GraphInfo* gi = malloc(sizeof(GraphInfo));
+    int i = 0;
+    for (; i < NUM_TASKS; i++) {
+   	    gi->indeg[i] = 0;
+    }
+    i = 0;
+    for (; i < NUM_TASKS; i++) {
+        gi->outdeg[i] = 0;    
+    }
+	gi->numEdges = 0;
+    setGraphInfo(workloadDependencies, gi);
+
+    rootQ = malloc(sizeof(Queue));
+    rootQ->head=NULL;
+    rootQ->len=0;
+    rootQ->tail=NULL;
+
+    Queue sortedTasksASAP[NUM_TASKS] = {{.head = NULL, .len=0, .tail = NULL}};
+    Queue sortedTasksALAP[NUM_TASKS] = {{.head = NULL, .len=0, .tail = NULL}};
+
+    int asap [NUM_TASKS] = {0};
+    int alap [NUM_TASKS] = {0};
+
+    i = 0;
+    for (; i < NUM_TASKS; i++) {
+        printf("ASAP[%d] : %d\n", i, asap[i]);
+    }
+    topologicalSort(deps, gi, rootQ, sortedTasksASAP, asap, ASAP);
+
+    Node* cur = rootQ->head;
+    while (cur != NULL) {
+        Node* tmp = cur->next;
+        free(cur);
+        cur = tmp;
+    }
+    i = 0;
+    for (; i < NUM_TASKS; i++) {
+        if (sortedTasks[i].len != 0) {
+            cur = sortedTasks[i].head;
+            while (cur != NULL) {
+                Node* tmp = cur->next;
+                free(cur);
+                cur = tmp;
+            }
+        }
+    }
+    free(rootQ);
+    free(gi);
+
+    //ALAP
+	i = 0;
+	for (; i < NUM_TASKS; i++) {
+		int j = 0;
+		for (; j < NUM_TASKS; j++) {
+			deps[i][j] = workloadDependencies[i][j];
+		}
+	}
+    gi = malloc(sizeof(GraphInfo));
+    i = 0;
+    for (; i < NUM_TASKS; i++) {
+   	    gi->indeg[i] = 0;
+    }
+    i = 0;
+    for (; i < NUM_TASKS; i++) {
+        gi->outdeg[i] = 0;    
+    }	
+    gi->numEdges = 0;
+    setGraphInfo(workloadDependencies, gi);
+
+    rootQ = malloc(sizeof(Queue));
+    rootQ->head=NULL;
+    rootQ->len=0;
+    rootQ->tail=NULL;
+
+    topologicalSort(deps, gi, rootQ, sortedTasksASAP, alap, ALAP);
+
+    //completely sorted list
+    //int completeSortedList [NUM_TASKS] = {0};
+
+    //setCompleteSortedList(workloadDeadlines);
+
+    printf("Max Depth of graph: %d\n", maxDepth);
+    assert(maxDepth == 2);
+
+    printf("ASAP[%d]: %d\n", 0, asap[0]);
+    assert(asap[0] == 2);
+
+    printf("ASAP[%d]: %d\n", 1, asap[1]);
+    assert(asap[1] == 1);
+
+    printf("ASAP[%d]: %d\n", 2, asap[2]);
+    assert(asap[2] == 0);
+
+    printf("ASAP[%d]: %d\n", 3, asap[3]);
+    assert(asap[3] == 1);
+
+    printf("ASAP[%d]: %d\n", 4, asap[4]);
+    assert(asap[4] == 0);
+
+    printf("ASAP[%d]: %d\n", 5, asap[5]);
+    assert(asap[5] == 0);
+        
+    printf("ASAP[%d]: %d\n", 6, asap[6]);
+    assert(asap[6] == 0);
+
+    printf("ASAP[%d]: %d\n", 7, asap[7]);
+    assert(asap[7] == 1);
+
+
+    printf("ALAP[%d]: %d\n", 0, alap[0]);
+    assert(alap[0] == 2);
+
+    printf("ALAP[%d]: %d\n", 1, alap[1]);
+    assert(alap[1] == 1);
+
+    printf("ALAP[%d]: %d\n", 2, alap[2]);
+    assert(alap[2] == 1);
+
+    printf("ALAP[%d]: %d\n", 3, alap[3]);
+    assert(alap[3] == 2);
+
+    printf("ALAP[%d]: %d\n", 4, alap[4]);
+    assert(alap[4] == 2);
+
+    printf("ALAP[%d]: %d\n", 5, alap[5]);
+    assert(alap[5] == 0);
+
+    printf("ALAP[%d]: %d\n", 6, alap[6]);
+    assert(alap[6] == 1);
+
+    printf("ALAP[%d]: %d\n", 7, alap[7]);
+    assert(alap[7] == 2);
+
+    printf("PASSED: test_setCompleteSortedList\n");
+
+    cur = rootQ->head;
+    while (cur != NULL) {
+        Node* tmp = cur->next;
+        free(cur);
+        cur = tmp;
+    }
+    i = 0;
+    for (; i < NUM_TASKS; i++) {
+        if (sortedTasks[i].len != 0) {
+            cur = sortedTasks[i].head;
+            while (cur != NULL) {
+                Node* tmp = cur->next;
+                free(cur);
+                cur = tmp;
+            }
+        }
+    }
+    free(rootQ);
+    free(gi);
+}
 
 int main() {
     test_setGraphInfo();
@@ -1089,6 +1279,8 @@ int main() {
     test_topologicalsort_ALAP();
     test_topologicalsort_ALAP_2();
     test_topologicalsort_ALAP_3();
+
+    test_setCompleteSortedList();
 
     //test_queue();
     return 0;
