@@ -9,7 +9,6 @@ struct shared_variable; // Defined in assignment1.h
 #define ASAP 0
 #define ALAP 1
 
-int curTask;
 
 typedef struct Node{
     int val;
@@ -28,7 +27,6 @@ typedef struct {
     int numEdges;
 } GraphInfo;
 
-int maxDepth;
 
 //heap, remember to free
 Queue* rootQ;

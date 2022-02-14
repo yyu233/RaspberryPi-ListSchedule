@@ -1176,53 +1176,53 @@ void test_setCompleteSortedList() {
     assert(maxDepth == 2);
 
     printf("ASAP[%d]: %d\n", 0, asap[0]);
-    assert(asap[0] == 2);
+    assert(asap[0] == 0);
 
     printf("ASAP[%d]: %d\n", 1, asap[1]);
     assert(asap[1] == 1);
 
     printf("ASAP[%d]: %d\n", 2, asap[2]);
-    assert(asap[2] == 0);
+    assert(asap[2] == 1);
 
     printf("ASAP[%d]: %d\n", 3, asap[3]);
-    assert(asap[3] == 1);
+    assert(asap[3] == 0);
 
     printf("ASAP[%d]: %d\n", 4, asap[4]);
     assert(asap[4] == 0);
 
     printf("ASAP[%d]: %d\n", 5, asap[5]);
-    assert(asap[5] == 0);
+    assert(asap[5] == 2);
         
     printf("ASAP[%d]: %d\n", 6, asap[6]);
-    assert(asap[6] == 0);
+    assert(asap[6] == 1);
 
     printf("ASAP[%d]: %d\n", 7, asap[7]);
-    assert(asap[7] == 1);
+    assert(asap[7] == 0);
 
 
     printf("ALAP[%d]: %d\n", 0, alap[0]);
-    assert(alap[0] == 2);
+    assert(alap[0] == 0);
 
     printf("ALAP[%d]: %d\n", 1, alap[1]);
     assert(alap[1] == 1);
 
     printf("ALAP[%d]: %d\n", 2, alap[2]);
-    assert(alap[2] == 1);
+    assert(alap[2] == 2);
 
     printf("ALAP[%d]: %d\n", 3, alap[3]);
-    assert(alap[3] == 2);
+    assert(alap[3] == 1);
 
     printf("ALAP[%d]: %d\n", 4, alap[4]);
     assert(alap[4] == 2);
 
     printf("ALAP[%d]: %d\n", 5, alap[5]);
-    assert(alap[5] == 0);
+    assert(alap[5] == 2);
 
     printf("ALAP[%d]: %d\n", 6, alap[6]);
-    assert(alap[6] == 1);
+    assert(alap[6] == 2);
 
     printf("ALAP[%d]: %d\n", 7, alap[7]);
-    assert(alap[7] == 2);
+    assert(alap[7] == 1);
     
     //completely sorted list
     int completeSortedList [NUM_TASKS] = {0};
@@ -1234,17 +1234,19 @@ void test_setCompleteSortedList() {
         printf("completeSortedList[%d] : %d\n", i, completeSortedList[i]);
     }
 
-    assert(completeSortedList[0] == 5);
-    assert(completeSortedList[1] == 6);
-    assert(completeSortedList[2] == 2);
+    assert(completeSortedList[0] == 0);
+    assert(completeSortedList[1] == 7);
+    assert(completeSortedList[2] == 3);
     assert(completeSortedList[3] == 4);
     assert(completeSortedList[4] == 1);
-    assert(completeSortedList[5] == 7);
-    assert(completeSortedList[6] == 3);
-    assert(completeSortedList[7] == 0);
+    assert(completeSortedList[5] == 6);
+    assert(completeSortedList[6] == 2);
+    assert(completeSortedList[7] == 5);
 
     printf("PASSED: test_setCompleteSortedList\n");
 
+    freeMem();
+    /**
     cur = rootQ->head;
     while (cur != NULL) {
         Node* tmp = cur->next;
@@ -1271,7 +1273,7 @@ void test_setCompleteSortedList() {
         }
     }
     free(rootQ);
-    free(gi);
+    free(gi);**/
 }
 
 int main() {

@@ -115,21 +115,21 @@ void setCompleteSortedList(int completeSortedList[], Queue sortedTasksASAP [NUM_
 }
 
 void setGraphInfo(int workloadDependencies[NUM_TASKS][NUM_TASKS], GraphInfo* gi) {
-	int j = 0;
 	//set indegree and edges
+	int i = 0;
+	for (; i < NUM_TASKS; i++) {
+		int j = 0;
+		for (; j <NUM_TASKS; j++) {
+			gi->indeg[i] += workloadDependencies[i][j];
+		}
+		gi->numEdges += gi->indeg[i];
+	}
+	//set outdegree
+	int j = 0;
 	for (; j < NUM_TASKS; j++) {
 		int i = 0;
 		for (; i < NUM_TASKS; i++) {
-			gi->indeg[j] += workloadDependencies[i][j];
-		}
-		gi->numEdges += gi->indeg[j];
-	}
-	//set outdegree
-	int i = 0;
-	for (; i < NUM_TASKS; i++) {
-		j = 0;
-		for (; j <NUM_TASKS; j++) {
-			gi->outdeg[i] += workloadDependencies[i][j];
+			gi->outdeg[j] += workloadDependencies[i][j];
 		}
 	}
 }
@@ -229,9 +229,9 @@ void topologicalSort (int deps[NUM_TASKS][NUM_TASKS], GraphInfo* gi, Queue* root
 				int v = 0;
 				for (; v < NUM_TASKS; v++) {
 					//find successor
-					if (deps[u][v] == 1) {
+					if (deps[v][u] == 1) {
 						// remove edge
-						deps[u][v] = 0;
+						deps[v][u] = 0;
 						gi->indeg[v]--;
 						gi->numEdges--;
 						// no predecessor 
@@ -250,9 +250,9 @@ void topologicalSort (int deps[NUM_TASKS][NUM_TASKS], GraphInfo* gi, Queue* root
 				int v = 0;
 				for (; v < NUM_TASKS; v++) {
 					//find predecessor
-					if (deps[v][u] == 1) {
+					if (deps[u][v] == 1) {
 						// remove edge
-						deps[v][u] = 0;
+						deps[u][v] = 0;
 						gi->outdeg[v]--;
 						gi->numEdges--;
 						// no successor 
@@ -417,7 +417,12 @@ TaskSelection select_task(SharedVariable* sv, const int* aliveTasks, long long i
 
 	// Sample scheduler: Round robin
 	// It selects a next thread using aliveTasks.
-	/*static int prev_selection = -1;
+	printf("DEBUG +++++++++++++++++++\n");
+	int j = 0;
+	for (; j < NUM_TASKS; j++) {
+		printf("aliveTasks[%d] : %d\n", j, aliveTasks[j]);
+	}/*
+	static int prev_selection = -1;
 
 	int i = prev_selection + 1;
 	while(1) {
@@ -430,9 +435,17 @@ TaskSelection select_task(SharedVariable* sv, const int* aliveTasks, long long i
 		}
 		++i;
 	}*/
+	
 
+	//printf("Press Any Key to Continue\n");  
+	//getchar();  
+	
 	// schedule
 	int task = completeSortedList[taskIndex];
+	if (aliveTasks[taskIndex] == 1) {
+
+	}
+	
 	if (aliveTasks[taskIndex] == 0) {
 		if (taskIndex == 7) {
 			taskIndex = 0;
@@ -445,6 +458,7 @@ TaskSelection select_task(SharedVariable* sv, const int* aliveTasks, long long i
 	// The retun value can be specified like this:
 	TaskSelection sel;
 	sel.task = task; // The thread ID which will be scheduled. i.e., 0(BUTTON) ~ 7(BUZZER)
+	//sel.task=prev_selection;
 	sel.freq = 1; // Request the maximum frequency (if you want the minimum frequency, use 0 instead.)
 
     return sel;

@@ -107,21 +107,20 @@ void setCompleteSortedList(int completeSortedList[], Queue sortedTasksASAP [NUM_
 }
 
 void setGraphInfo(int workloadDependencies[NUM_TASKS][NUM_TASKS], GraphInfo* gi) {
+	int i = 0;
+	for (; i < NUM_TASKS; i++) {
+		int j = 0;
+		for (; j <NUM_TASKS; j++) {
+			gi->indeg[i] += workloadDependencies[i][j];
+		}
+		gi->numEdges += gi->indeg[i];
+	}
+	//set outdegree
 	int j = 0;
-	//set indegree and edges
 	for (; j < NUM_TASKS; j++) {
 		int i = 0;
 		for (; i < NUM_TASKS; i++) {
-			gi->indeg[j] += workloadDependencies[i][j];
-		}
-		gi->numEdges += gi->indeg[j];
-	}
-	//set outdegree
-	int i = 0;
-	for (; i < NUM_TASKS; i++) {
-		j = 0;
-		for (; j <NUM_TASKS; j++) {
-			gi->outdeg[i] += workloadDependencies[i][j];
+			gi->outdeg[j] += workloadDependencies[i][j];
 		}
 	}
 }
@@ -185,9 +184,9 @@ void topologicalSort(int deps[NUM_TASKS][NUM_TASKS], GraphInfo* gi, Queue* rootQ
 				int v = 0;
 				for (; v < NUM_TASKS; v++) {
 					//find successor
-					if (deps[u][v] == 1) {
+					if (deps[v][u] == 1) {
 						// remove edge
-						deps[u][v] = 0;
+						deps[v][u] = 0;
 						gi->indeg[v]--;
 						gi->numEdges--;
 						// no predecessor 
@@ -206,9 +205,9 @@ void topologicalSort(int deps[NUM_TASKS][NUM_TASKS], GraphInfo* gi, Queue* rootQ
 				int v = 0;
 				for (; v < NUM_TASKS; v++) {
 					//find predecessor
-					if (deps[v][u] == 1) {
+					if (deps[u][v] == 1) {
 						// remove edge
-						deps[v][u] = 0;
+						deps[u][v] = 0;
 						gi->outdeg[v]--;
 						gi->numEdges--;
 						// no successor 
